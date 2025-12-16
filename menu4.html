@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Digital Panopticon - Menu4</title>
+
+  <!-- Pretendard -->
+  <link
+    rel="stylesheet"
+    as="style"
+    crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/pretendardvariable-gov.min.css"
+  />
+
+  <style>
+    :root{
+      --bg: #141818;
+      --text: #ffffff;
+      --text-dim: rgba(255,255,255,0.78);
+      --text-dimmer: rgba(255,255,255,0.6);
+      --line: rgba(255,255,255,0.22);
+      --line-strong: rgba(255,255,255,0.36);
+      --accent: #ff5a1f;
+      --maxw: 430px;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Pretendard Variable","Pretendard",Pretendard,-apple-system,BlinkMacSystemFont,
+        "Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+
+    /* ===== Layout ===== */
+    .page{
+      min-height: 100svh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container{
+      width: min(100%, var(--maxw));
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ===== Header ===== */
+    header{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        20px
+        0;
+    }
+
+    .back{
+      font-size: 20px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .header-title{
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--accent);
+    }
+
+    /* header ↔ content 간격 */
+    .header-spacer{
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    /* ===== Content ===== */
+    .content{
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ===== Title + Text ===== */
+    .title{
+      margin: 0;
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .text{
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.8;
+      letter-spacing: -0.01em;
+      word-break: keep-all;
+      white-space: pre-line;
+    }
+
+    /* ===== References ===== */
+    .refs{
+      margin-top: 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .refs h2{
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .ref-list{
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ref-item a{
+      display: block;
+      padding: 12px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.15);
+      color: rgba(255,255,255,0.85);
+      font-size: 13px;
+      line-height: 1.45;
+      transition: border-color .15s ease, transform .15s ease, background .15s ease;
+    }
+
+    .ref-item a:active{ transform: scale(0.99); }
+
+    @media (hover:hover) and (pointer:fine){
+      .ref-item a:hover{
+        border-color: var(--line-strong);
+        background: rgba(0,0,0,0.22);
+      }
+    }
+
+    .ref-meta{
+      display:block;
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-dimmer);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 본문/링크 ↔ footer 최소 간격 */
+    .content-spacer{
+      height: 60px;
+      flex-shrink: 0;
+    }
+
+    /* ===== Footer (menu2와 동일) ===== */
+    footer{
+      background: #989898;
+      color: #ffffff;
+      padding: 14px 20px 18px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    footer strong{
+      display: block;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="container">
+
+      <!-- Header -->
+      <header>
+        <a href="./index.html" class="back" aria-label="뒤로가기">←</a>
+        <div class="header-title">제 2장 내려놓는 순간 보이는 것들</div>
+      </header>
+
+      <!-- header ↔ content 간격 -->
+      <div class="header-spacer"></div>
+
+      <!-- Content -->
+      <div class="content">
+        <div class="text">
+우리는 매일 수많은 대화를 나눈다.
+
+친구와의 수다, 가족과의 안부, AI 어시스턴트와의 일상적 문답들. 이 모든 대화가 정말 '사적인' 영역에 머물고 있다고 확신하는가?
+
+"좋아하는 음식이 무엇인가요?"라는 질문은 단순한 호기심일 수도, 당신의 소비 패턴을 분석하는 첫 번째 데이터 수집일 수도 있다.
+
+AI와의 대화는 특히 더 교묘하다.
+
+우리는 AI를 도구로 인식하며 편안하게 말을 건넨다. 마치 일기장에 글을 쓰듯, 검색창에 고민을 털어놓듯.
+
+하지만 그 순간 우리의 언어는 이미 데이터가 되어 분석되고, 저장된다.
+
+<b>1면 '보이지 않는 감시자'는 이러한 무의식적 정보 제공의 순간을 포착한다.</b>
+
+관람객은 "당신만을 위한 맞춤형 예술 작품을 만들어드립니다"라는 달콤한 제안에 이끌려, 자연스럽게 자신의 이야기를 풀어놓는다. 취향, 계획, 욕망, 고민까지도.
+
+그러나 대화가 끝나는 순간, 반전이 시작된다.
+
+관람객이 마주하는 것은 약속한 예술 작품 대신 공간에 입장하는 순간부터 기록된 CCTV 영상이다.
+
+곧 이어, 방금 전 내뱉은 모든 말들이 키워드로 추출되어 벽면을 가득 채운다.
+
+키워드들은 관람객의 움직임을 따라 이동한다. 마치 지울 수 없는 디지털 낙인처럼, 그림자보다 더 집요하게 따라붙는다. 이는 단순한 시각적 효과가 아니다. 우리가 남긴 데이터가 어떻게 우리를 정의하고 통제하게 되는 지를 몸소 체험하게 하는 장치다.
+
+당신의 정보는 이미 수집되었다.
+
+그리고 그 데이터는 영원히 어딘가에 존재하게 될 것이다.
+        </div>
+
+        
+        
+      </div>
+
+      <!-- 본문/링크 ↔ footer 최소 간격 -->
+      <div class="content-spacer"></div>
+
+      <!-- Footer (menu2와 동일) -->
+      <footer>
+        <strong>Digital Panopticon : 잠들지 않는 눈과 귀</strong>
+        AI 기반 자연어 처리 인터랙티브 미디어 아트<br />
+        Team wave to 덕 | 백민서 성은희 이다윤 전윤하<br />
+        © 2025 wave to 덕 all rights reserved
+      </footer>
+
+    </section>
+  </main>
+</body>
+</html>
