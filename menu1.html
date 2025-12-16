@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Digital Panopticon - Menu1</title>
+
+  <!-- Pretendard -->
+  <link
+    rel="stylesheet"
+    as="style"
+    crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/pretendardvariable-gov.min.css"
+  />
+
+  <!-- Matter.js -->
+  <script src="https://cdn.jsdelivr.net/npm/matter-js@0.19.0/build/matter.min.js"></script>
+
+  <style>
+    :root{
+      --bg:#141818;
+      --text:#ffffff;
+      --accent:#ff5a1f;
+      --maxw: 430px;
+
+      --chip-fill: rgba(255,255,255,0.14);
+      --chip-stroke: rgba(255,255,255,0.18);
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Pretendard Variable","Pretendard",Pretendard,-apple-system,BlinkMacSystemFont,
+        "Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+
+    .page{
+      height: 100svh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container{
+      width: min(100%, var(--maxw));
+      height: 100svh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        20px
+        0;
+      flex-shrink: 0;
+      z-index: 5;
+    }
+
+    .back{
+      font-size: 20px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .header-title{
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--accent);
+    }
+
+    .header-spacer{
+      height: 18px;
+      flex-shrink: 0;
+    }
+
+    .stage{
+      position: relative;
+      flex: 1;
+      margin: 0 20px calc(16px + env(safe-area-inset-bottom));
+      border-radius: 16px;
+      overflow: hidden;
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.10);
+      touch-action: none;
+    }
+
+    .hint{
+      position: absolute;
+      left: 14px;
+      bottom: 12px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: -0.01em;
+      user-select: none;
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    /* ✅ 디버그 상태 표시(모바일에서도 보이게) */
+    .debug{
+      position: absolute;
+      left: 12px;
+      top: 12px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.14);
+      font-size: 12px;
+      line-height: 1.35;
+      color: rgba(255,255,255,0.85);
+      z-index: 3;
+      white-space: pre-line;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    canvas{
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="container">
+      <header>
+        <a href="./index.html" class="back" aria-label="뒤로가기">←</a>
+        <div class="header-title">보이지 않는 감시자</div>
+      </header>
+      <div class="header-spacer"></div>
+
+      <div class="stage" id="stage">
+        <div class="debug" id="debug">loading...</div>
+        <div class="hint">drag the words</div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const debugEl = document.getElementById("debug");
+    const stageEl = document.getElementById("stage");
+
+    function setDebug(msg){
+      debugEl.textContent = msg;
+    }
+
+    // ✅ 더미 키워드 20개 (한글 정상)
+    const DUMMY_KEYWORDS = [
+      "알고리즘","추천","감시","추적","도청",
+      "개인정보","데이터","기록","로그","패턴",
+      "예측","프로파일링","필터버블","편향","클릭",
+      "스크롤","시선","광고","취향","피드"
+    ];
+
+    // Firebase 연결 전까지는 이걸로 테스트
+    async function getKeywords(){
+      return DUMMY_KEYWORDS;
+    }
+
+    window.addEventListener("error", (e) => {
+      setDebug("❌ JS Error\n" + (e.message || "unknown"));
+    });
+
+    function init(){
+      if (!window.Matter){
+        setDebug("❌ Matter.js 로드 실패\nCDN 차단/네트워크 확인");
+        return;
+      }
+
+      const {
+        Engine, Render, Runner,
+        Bodies, Body, Composite,
+        Mouse, MouseConstraint, Events
+      } = Matter;
+
+      const stageW = stageEl.clientWidth;
+      const stageH = stageEl.clientHeight;
+
+      if (stageW < 10 || stageH < 10){
+        setDebug("❌ stage 크기 이상\nw=" + stageW + " h=" + stageH);
+        return;
+      }
+
+      setDebug("✅ Matter OK\nstage: " + stageW + "×" + stageH + "\nspawning...");
+
+      const engine = Engine.create();
+      engine.gravity.y = 1.05;
+
+      const render = Render.create({
+        element: stageEl,
+        engine,
+        options: {
+          width: stageW,
+          height: stageH,
+          wireframes: false,
+          background: "transparent",
+          pixelRatio: Math.min(window.devicePixelRatio || 1, 2)
+        }
+      });
+
+      Render.run(render);
+      const runner = Runner.create();
+      Runner.run(runner, engine);
+
+      // Walls
+      let walls = [];
+      function buildWalls(){
+        walls.forEach(w => Composite.remove(engine.world, w));
+        walls = [];
+
+        const w = stageEl.clientWidth;
+        const h = stageEl.clientHeight;
+        const thick = 60;
+
+        const floor = Bodies.rectangle(w/2, h + thick/2, w + thick*2, thick, { isStatic:true, render:{ visible:false }});
+        const ceil  = Bodies.rectangle(w/2, -thick/2, w + thick*2, thick, { isStatic:true, render:{ visible:false }});
+        const left  = Bodies.rectangle(-thick/2, h/2, thick, h + thick*2, { isStatic:true, render:{ visible:false }});
+        const right = Bodies.rectangle(w + thick/2, h/2, thick, h + thick*2, { isStatic:true, render:{ visible:false }});
+
+        walls.push(floor, ceil, left, right);
+        Composite.add(engine.world, walls);
+      }
+      buildWalls();
+
+      // Drag
+      const mouse = Mouse.create(render.canvas);
+      const mouseConstraint = MouseConstraint.create(engine, {
+        mouse,
+        constraint: { stiffness: 0.18, damping: 0.12, render: { visible:false } }
+      });
+      Composite.add(engine.world, mouseConstraint);
+      render.mouse = mouse;
+      render.canvas.style.touchAction = "none";
+
+      // Chips
+      const chips = [];
+
+      function textWidthApprox(text, fontSize=14){
+        const base = fontSize * 0.62;
+        return Math.max(72, Math.min(220, Math.round(text.length * base + 36)));
+      }
+
+      function createChip(text, x, y){
+        const fontSize = 14;
+        const w = textWidthApprox(text, fontSize);
+        const h = 42;
+
+        const body = Bodies.rectangle(x, y, w, h, {
+          restitution: 0.25,
+          friction: 0.18,
+          frictionAir: 0.02,
+          density: 0.0016,
+          chamfer: { radius: 22 },
+          render: {
+            fillStyle: getComputedStyle(document.documentElement).getPropertyValue("--chip-fill").trim(),
+            strokeStyle: getComputedStyle(document.documentElement).getPropertyValue("--chip-stroke").trim(),
+            lineWidth: 1
+          }
+        });
+
+        body.plugin = { labelText: text, w, h, fontSize };
+        chips.push(body);
+        return body;
+      }
+
+      async function spawn(){
+        const keywords = (await getKeywords()).slice(0, 20);
+        const w = stageEl.clientWidth;
+
+        // ✅ 화면 안에서 바로 보이도록 y를 stage 내부로 시작
+        // (지금 디버깅 목적: "정말 생성되는지" 확인)
+        keywords.forEach((k, i) => {
+          const x = 50 + Math.random() * (w - 100);
+          const y = 40 + i * 10; // 화면 내부에서 시작
+          const b = createChip(k, x, y);
+          Composite.add(engine.world, b);
+          // 살짝 랜덤 힘 줘서 뭉치지 않게
+          Body.applyForce(b, b.position, { x: (Math.random()-0.5)*0.002, y: 0.002 });
+        });
+
+        setDebug("✅ spawn OK\nkeywords: " + keywords.length + "\n(한글 OK)");
+      }
+
+      // Draw text on bodies
+      Events.on(render, "afterRender", () => {
+        const ctx = render.context;
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "rgba(255,255,255,0.92)";
+        ctx.font = "700 14px Pretendard Variable, Pretendard, sans-serif";
+
+        for (const b of chips){
+          const p = b.position;
+          const a = b.angle;
+          const t = b.plugin?.labelText ?? "";
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate(a);
+          ctx.fillText(t, 0, 0);
+          ctx.restore();
+        }
+        ctx.restore();
+      });
+
+      // Resize
+      let resizeTimer = null;
+      window.addEventListener("resize", () => {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(() => {
+          Render.stop(render);
+
+          render.options.width = stageEl.clientWidth;
+          render.options.height = stageEl.clientHeight;
+          render.canvas.width = Math.floor(stageEl.clientWidth * render.options.pixelRatio);
+          render.canvas.height = Math.floor(stageEl.clientHeight * render.options.pixelRatio);
+          render.canvas.style.width = stageEl.clientWidth + "px";
+          render.canvas.style.height = stageEl.clientHeight + "px";
+
+          buildWalls();
+          Render.run(render);
+        }, 120);
+      });
+
+      spawn();
+    }
+
+    // DOM 준비 후 실행
+    window.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
