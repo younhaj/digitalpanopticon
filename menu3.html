@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Digital Panopticon - Menu3</title>
+
+  <!-- Pretendard -->
+  <link
+    rel="stylesheet"
+    as="style"
+    crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/pretendardvariable-gov.min.css"
+  />
+
+  <style>
+    :root{
+      --bg: #141818;
+      --text: #ffffff;
+      --text-dim: rgba(255,255,255,0.78);
+      --text-dimmer: rgba(255,255,255,0.6);
+      --line: rgba(255,255,255,0.22);
+      --line-strong: rgba(255,255,255,0.36);
+      --accent: #ff5a1f;
+      --maxw: 430px;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Pretendard Variable","Pretendard",Pretendard,-apple-system,BlinkMacSystemFont,
+        "Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+
+    /* ===== Layout ===== */
+    .page{
+      min-height: 100svh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container{
+      width: min(100%, var(--maxw));
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ===== Header ===== */
+    header{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        20px
+        0;
+    }
+
+    .back{
+      font-size: 20px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .header-title{
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--accent);
+    }
+
+    /* header ↔ content 간격 */
+    .header-spacer{
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    /* ===== Content ===== */
+    .content{
+      padding: 0 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ===== Title + Text ===== */
+    .title{
+      margin: 0;
+      font-size: 16px;
+      font-weight: 650;
+      letter-spacing: -0.02em;
+      color: rgba(255,255,255,0.92);
+    }
+
+    .text{
+      color: var(--text-dim);
+      font-size: 14px;
+      line-height: 1.8;
+      letter-spacing: -0.01em;
+      word-break: keep-all;
+      white-space: pre-line;
+    }
+
+    /* ===== References ===== */
+    .refs{
+      margin-top: 10px;
+      padding-top: 14px;
+      border-top: 1px solid var(--line);
+    }
+
+    .refs h2{
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: rgba(255,255,255,0.72);
+    }
+
+    .ref-list{
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ref-item a{
+      display: block;
+      padding: 12px 12px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: rgba(0,0,0,0.15);
+      color: rgba(255,255,255,0.85);
+      font-size: 13px;
+      line-height: 1.45;
+      transition: border-color .15s ease, transform .15s ease, background .15s ease;
+    }
+
+    .ref-item a:active{ transform: scale(0.99); }
+
+    @media (hover:hover) and (pointer:fine){
+      .ref-item a:hover{
+        border-color: var(--line-strong);
+        background: rgba(0,0,0,0.22);
+      }
+    }
+
+    .ref-meta{
+      display:block;
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-dimmer);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    /* 본문/링크 ↔ footer 최소 간격 */
+    .content-spacer{
+      height: 60px;
+      flex-shrink: 0;
+    }
+
+    /* ===== Footer (menu2와 동일) ===== */
+    footer{
+      background: #989898;
+      color: #ffffff;
+      padding: 14px 20px 18px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    footer strong{
+      display: block;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="container">
+
+      <!-- Header -->
+      <header>
+        <a href="./index.html" class="back" aria-label="뒤로가기">←</a>
+        <div class="header-title">감시로부터 자유로워지기</div>
+      </header>
+
+      <!-- header ↔ content 간격 -->
+      <div class="header-spacer"></div>
+
+      <!-- Content -->
+      <div class="content">
+        <h1 class="title">우리는 알고리즘의 눈으로 세상을 본다</h1>
+
+        <div class="text">
+어느 날 당신이 친구와 나눈 대화의 주제가 화면 속에 광고로 등장한다. 검색한 적 없는 상품이, 클릭한 적 없는 페이지가, 어느새 당신의 일상을 채운다. 우연이라 믿고 싶지만, 그 우연이 반복될 때 우리는 비로소 깨닫는다. 누군가 보고 있다는 것을.
+
+이러한 데이터 수집이 우리 생각의 영역까지 침범하기 시작했다. AI 알고리즘은 우리의 취향을 학습하고, 우리가 좋아할 만한 콘텐츠만을 골라 보여준다. 편리함 뒤에는 '필터 버블'이라는 함정이 있다. 한쪽으로 치우친 정보만 반복적으로 접하면서, 우리는 서로 다른 세계에 갇히게 된다.
+
+최근에는 스마트폰이 우리의 대화를 엿듣고 있다는 의혹까지 제기되었다. 우리의 목소리마저 데이터가 되는 시대, 우리는 어디까지 감시당하고 있는가.
+
+우리는 어떤 경로로 정보를 추천받는지 모르고, 누가 우리의 데이터를 어떻게 사용하는지 알 수 없다. 이용자는 그저 알고리즘이 건네는 것을 받아들일 뿐이다. 우리는 자유롭다고 믿지만, 보이지 않는 손에 의해 조종당하고 있다.
+
+<b>이제 우리는 질문해야 한다.</b> 이 시스템은 누구를 위한 것인가. 편리함을 주는 대신 무엇을 빼앗아가는가. 알고리즘이 가져다주는 익숙함 속에서, 우리는 점점 다른 생각을 할 수 없게 된다. 저마다의 개성은 흐려지고, 편향은 강화된다.
+알고리즘이 우리를 각자의 방에 가두어놓는다면, 우리는 더 이상 서로의 말을 들을 수 없다.
+
+<b>그리고 우리는 깨어 있어야 한다.</b> 알고리즘이 건네는 것만 받아들이지 말고, 스스로 다른 목소리를 찾아 나서야 한다. 디지털 미디어 교육을 통해 우리가 어떤 구조 속에 있는지 이해해야 한다. 감시받고 있다는 감각조차 희미해진 지금, 우리는 정말 스스로 선택하고 있는 것일까. 그 질문을 멈추지 않는 것, 그것이 우리가 이 시대에서 자유로울 수 있는 유일한 방법이다.
+        </div>
+
+        <!-- References -->
+        <section class="refs" aria-label="참조 링크">
+          
+          <ul class="ref-list">
+            <li class="ref-item">
+              <a href="https://www.yna.co.kr/view/AKR20250925105900518" target="_blank" rel="noopener noreferrer">
+                [팩트체크] SNS 알고리즘이 극단화 야기?…'필터 버블' 실제 존재하나
+                <span class="ref-meta">https://www.yna.co.kr/view/AKR20250925105900518</span>
+              </a>
+            </li>
+            <li class="ref-item">
+              <a href="https://www.aitimes.com/news/articleView.html?idxno=165010" target="_blank" rel="noopener noreferrer">
+                메타, 국내 이용자 데이터 수집 혐의로 216억 벌금 맞아
+                <span class="ref-meta">https://www.aitimes.com/news/articleView.html?idxno=165010</span>
+              </a>
+            </li>
+            <li class="ref-item">
+              <a href="https://www.i-boss.co.kr/ab-qletter-806451" target="_blank" rel="noopener noreferrer">
+                맞춤형 광고, 내 대화 엿듣고 제품 추천해줬나 논란
+                <span class="ref-meta">https://www.i-boss.co.kr/ab-qletter-806451</span>
+              </a>
+            </li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- 본문/링크 ↔ footer 최소 간격 -->
+      <div class="content-spacer"></div>
+
+      <!-- Footer (menu2와 동일) -->
+      <footer>
+        <strong>Digital Panopticon : 잠들지 않는 눈과 귀</strong>
+        AI 기반 자연어 처리 인터랙티브 미디어 아트<br />
+        Team wave to 덕 | 백민서 성은희 이다윤 전윤하<br />
+        © 2025 wave to 덕 all rights reserved
+      </footer>
+
+    </section>
+  </main>
+</body>
+</html>
+

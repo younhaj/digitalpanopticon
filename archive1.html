@@ -18,13 +18,15 @@
             --header-h: 56px;
             --header-top-gap: 20px;
 
-            /* drawer(밝은 디자인 통일) */
+            /* ✅ index랑 동일한 drawer 변수 */
+            --accent: #ff5a1f;
             --drawer-bg: #e9e9e9;
             --drawer-line: rgba(0, 0, 0, 0.18);
             --drawer-dim: rgba(0, 0, 0, 0.18);
-
-            --accent: #ff5a1f;
+            --drawer-ink: rgba(0, 0, 0, 0.92);
+            --drawer-link: rgba(0, 0, 0, 0.88);
         }
+
 
         * {
             box-sizing: border-box;
@@ -306,8 +308,98 @@
 
 <body>
     <!-- ✅ 공통 header 주입 -->
-    <div id="appHeader"></div>
-    <script src="./js/app-shell.js" defer></script>
+
+    <body>
+        <header class="fixed-header">
+            <a href="./index.html" class="brand" aria-label="홈으로">
+                <img src="./assets/logo.png" alt="Digital Panopticon" />
+            </a>
+            <button class="hamburger" type="button" aria-label="메뉴 열기" id="hamburgerBtn">
+                <img src="./assets/hamburger.png" alt="" />
+            </button>
+        </header>
+
+        <div class="drawer-dim" id="drawerDim" aria-hidden="true"></div>
+
+        <aside class="drawer" id="drawer" aria-hidden="true">
+            <div class="drawer-inner">
+                <button class="drawer-close" type="button" aria-label="메뉴 닫기" id="drawerCloseBtn">
+                    <img src="./assets/cancel.png" alt="" />
+                </button>
+
+                <section class="drawer-section" aria-label="전시 소개 메뉴">
+                    <h2 class="drawer-title">전시 소개</h2>
+                    <div class="drawer-rule"></div>
+                    <nav class="drawer-links" aria-label="전시 소개 세부 탭">
+                        <a class="neue" href="./menu4.html#overview">Overview</a>
+                        <a class="neue" href="./menu4.html#themes">Themes</a>
+                        <a class="neue" href="./menu4.html#creators">Creators</a>
+                    </nav>
+                </section>
+
+                <section class="drawer-section" aria-label="Archive 메뉴" style="margin-top: 26px;">
+                    <h2 class="drawer-title">Archive</h2>
+                    <div class="drawer-rule"></div>
+                    <nav class="drawer-links" aria-label="Archive 세부 탭">
+                        <a class="neue" href="./archive1.html">Keyword Art</a>
+                    </nav>
+                </section>
+            </div>
+        </aside>
+
+        <main class="page">
+            <section class="frame">
+                <div class="grid" id="folderGrid">
+                    <a class="folder" href="./keyword-art.html?vid=17">
+                        <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+                        <span class="folder-no">No.17</span>
+                    </a>
+
+                    <a class="folder" href="./keyword-art.html?vid=17">
+                        <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+                        <span class="folder-no">No.16</span>
+                    </a>
+
+                    <a class="folder" href="./keyword-art.html?vid=17">
+                        <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+                        <span class="folder-no">No.15</span>
+                    </a>
+
+                    <a class="folder" href="./keyword-art.html?vid=17">
+                        <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+                        <span class="folder-no">No.14</span>
+                    </a>
+                </div>
+            </section>
+        </main>
+
+        <script>
+            (function () {
+                const hamburgerBtn = document.getElementById("hamburgerBtn");
+                const drawer = document.getElementById("drawer");
+                const drawerDim = document.getElementById("drawerDim");
+                const drawerCloseBtn = document.getElementById("drawerCloseBtn");
+
+                function openDrawer() {
+                    drawer.classList.add("open");
+                    drawerDim.classList.add("open");
+                    document.body.classList.add("menu-open");
+                    document.body.style.overflow = "hidden";
+                }
+
+                function closeDrawer() {
+                    drawer.classList.remove("open");
+                    drawerDim.classList.remove("open");
+                    document.body.classList.remove("menu-open");
+                    document.body.style.overflow = "";
+                }
+
+                hamburgerBtn.addEventListener("click", openDrawer);
+                drawerCloseBtn.addEventListener("click", closeDrawer);
+                drawerDim.addEventListener("click", closeDrawer);
+            })();
+        </script>
+    </body>
 
     <main class="page">
         <section class="frame">
