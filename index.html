@@ -16,96 +16,151 @@
   <style>
     :root{
       --maxw: 430px;
+      --header-h: 56px;
+
+      /* ✅ index는 다크, drawer는 menu4와 동일한 “라이트” 스타일로 통일 */
+      --accent: #ff5a1f;
+      --drawer-bg: #e9e9e9;
+      --drawer-line: rgba(0, 0, 0, 0.18);
+      --drawer-dim: rgba(0, 0, 0, 0.18);
+      --drawer-ink: rgba(0,0,0,0.92);
+      --drawer-link: rgba(0,0,0,0.88);
+    }
+
+    /* Neue Plak */
+    @font-face{
+      font-family: "NeuePlakCond";
+      src: url("./assets/neue-plak-condensed-semibold.ttf") format("truetype");
+      font-weight: 600;
+      font-style: normal;
+      font-display: swap;
     }
 
     *{ box-sizing: border-box; }
-    html, body{
-      height: 100%;
-      margin: 0;
-    }
+    html, body{ height: 100%; margin: 0; }
 
     body{
       font-family: "Pretendard Variable","Pretendard",Pretendard,-apple-system,BlinkMacSystemFont,
         "Segoe UI",Roboto,"Noto Sans KR",sans-serif;
       color: #ffffff;
-      background: #0b0f10;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
+      background: #000;
+      overflow-x: hidden;
     }
 
     a{ color: inherit; text-decoration: none; }
 
-    /* ===== Background (fade in) ===== */
+    /* ===== Header ===== */
+    .fixed-header{
+      position: fixed;
+      top: calc(env(safe-area-inset-top) + 20px);
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(100%, var(--maxw));
+      height: var(--header-h);
+      padding: 0 20px;
+      z-index: 1000;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand img{
+      height: 56px;
+      width: auto;
+      display: block;
+    }
+
+    .hamburger{
+      width: 44px;
+      height: 44px;
+      border: none;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .hamburger img{
+      width: 22px;
+      height: 22px;
+      opacity: 0.9;
+      display: block;
+    }
+
+    /* ===== Intro Video ===== */
+    .intro{
+      position: fixed;
+      inset: 0;
+      z-index: 900;
+      background: #000;
+      display: grid;
+      place-items: center;
+      opacity: 1;
+      transition: opacity 800ms ease;
+    }
+
+    .intro.hidden{
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .intro video{
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transform: scale(2);
+    }
+
+    /* ===== Background ===== */
     .bg{
       position: fixed;
       inset: 0;
-      background-image: url("./assets/bg-home.jpg");
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-
-      transform: scale(1.02);
-      z-index: -1;
-
-      /* 초기 상태 */
+      background: url("./assets/bg-home.jpg") center / cover no-repeat;
       opacity: 0;
       filter: brightness(0.35);
-
-      /* 5초 페이드 인 */
-      animation: bgFadeIn 3s ease-out forwards;
+      transition: opacity 1200ms ease, filter 1200ms ease;
+      z-index: -1;
     }
 
-    @keyframes bgFadeIn{
-      0%{
-        opacity: 0;
-        filter: brightness(0.35);
-      }
-      100%{
-        opacity: 1;
-        filter: brightness(0.55);
-      }
+    body.show-home .bg{
+      opacity: 1;
+      filter: brightness(0.55);
     }
 
-    /* ===== Layout ===== */
+    /* ===== Home Layout ===== */
     .page{
       min-height: 100svh;
       display: flex;
       justify-content: center;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 900ms ease, transform 900ms ease;
+    }
+
+    body.show-home .page{
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .content{
-      position: relative;
-      z-index: 1;
       width: min(100%, var(--maxw));
       min-height: 100svh;
-
       padding:
-        calc(40px + env(safe-area-inset-top))
+        calc(var(--header-h) + 36px + env(safe-area-inset-top))
         20px
-        calc(40px + env(safe-area-inset-bottom));
-
+        40px;
       display: flex;
       flex-direction: column;
     }
 
-    /* ===== Title ===== */
-    .title{
-      margin: 0;
-      font-weight: 800;
-      letter-spacing: -0.04em;
-      line-height: 0.92;
-      font-size: clamp(44px, 10.5vw, 64px);
-    }
-    .title span{ display: block; }
-
-    /* ===== Menu Wrapper (세로 중앙) ===== */
     .menu-wrapper{
       flex: 1;
       display: flex;
       align-items: center;
     }
 
-    /* ===== Menu ===== */
     .menu{
       width: 100%;
       display: flex;
@@ -115,101 +170,297 @@
 
     .menu-btn{
       height: 60px;
-      width: 100%;
       border-radius: 30px;
-
+      background: rgba(0,0,0,0.25);
+      border: 0.5px solid rgba(255,255,255,0.22);
       display: flex;
       align-items: center;
       justify-content: center;
       position: relative;
-
-      background: rgba(0,0,0,0.2);
-      border: 0.5px solid rgba(255,255,255,0.22);
-
       backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
-
-      transition:
-        transform 0.15s ease,
-        background-color 0.15s ease,
-        border-color 0.15s ease;
-
-      touch-action: manipulation;
+      transition: transform 0.15s ease;
     }
 
-    .menu-btn:active{
-      transform: scale(0.97);
-    }
+    .menu-btn:active{ transform: scale(0.97); }
 
     .menu-btn .text{
       font-size: 18px;
       font-weight: 700;
-      letter-spacing: -0.02em;
-      text-align: center;
-      padding: 0 48px;
-      width: 100%;
     }
 
     .menu-btn .arrow{
       position: absolute;
       right: 18px;
-      font-size: 18px;
-      opacity: 0.85;
     }
 
-    @media (hover:hover) and (pointer:fine){
-      .menu-btn:hover{
-        background: rgba(0,0,0,0.28);
-        border-color: rgba(255,255,255,0.35);
-      }
-    }
-
-    /* ===== Footer ===== */
     footer{
-      margin-top: 28px;
       font-size: 12px;
-      color: rgba(255,255,255,0.55);
+      opacity: 0.55;
+    }
+
+    /* =================================================
+       ✅ Drawer (menu4 라이트 디자인으로 통일)
+       ================================================= */
+    .drawer-dim{
+      position: fixed;
+      inset: 0;
+      background: var(--drawer-dim);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 220ms ease;
+      z-index: 1400;
+    }
+
+    .drawer{
+      position: fixed;
+      inset: 0;
+      background: var(--drawer-bg);
+      transform: translateX(100%);
+      transition: transform 280ms ease;
+      z-index: 1500;
+      display: flex;
+      justify-content: center;
+      color: var(--drawer-ink);
+    }
+
+    .drawer.open{ transform: translateX(0); }
+    .drawer-dim.open{
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .drawer-inner{
+      width: min(100%, var(--maxw));
+      padding:
+        calc(env(safe-area-inset-top) + 18px) 20px
+        calc(env(safe-area-inset-bottom) + 24px);
+      position: relative;
+    }
+
+    .drawer-close{
+      position: absolute;
+      top: calc(env(safe-area-inset-top) + 14px);
+      right: 14px;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      touch-action: manipulation;
+    }
+
+    .drawer-close:active{ transform: scale(0.98); }
+
+    .drawer-close img{
+      width: 18px;
+      height: 18px;
+      display: block;
+    }
+
+    .drawer-section{ margin-top: 64px; }
+
+    .drawer-title{
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin: 0 0 10px;
+      color: var(--drawer-ink);
+    }
+
+    .drawer-rule{
+      height: 1px;
+      background: var(--drawer-line);
+      margin: 0 0 18px;
+      width: 68%;
+    }
+
+    .drawer-links{
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding-bottom: 18px;
+    }
+
+    .drawer-links a{
+      display: inline-block;
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--drawer-link);
+      width: fit-content;
+    }
+
+    /* ✅ 세부 탭 Neue 적용 */
+    .drawer-links a.neue{
+      font-family: "NeuePlakCond","Pretendard Variable","Pretendard",sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    .drawer-links a:active{ color: var(--accent); }
+    @media (hover:hover) and (pointer:fine){
+      .drawer-links a:hover{ color: var(--accent); }
+    }
+
+    body.menu-open #hamburgerBtn{
+      opacity: 0;
+      pointer-events: none;
     }
   </style>
 </head>
 
 <body>
-  <!-- Background -->
-  <div class="bg" aria-hidden="true"></div>
 
+  <!-- Header -->
+  <header class="fixed-header">
+    <a href="./index.html" class="brand" aria-label="홈으로">
+      <img src="./assets/logo.png" alt="Digital Panopticon" />
+    </a>
+    <button class="hamburger" type="button" aria-label="메뉴 열기" id="hamburgerBtn">
+      <img src="./assets/hamburger.png" alt="" />
+    </button>
+  </header>
+
+  <!-- ✅ Drawer Dim + Drawer -->
+  <div class="drawer-dim" id="drawerDim" aria-hidden="true"></div>
+
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-inner">
+      <button class="drawer-close" type="button" aria-label="메뉴 닫기" id="drawerCloseBtn">
+        <img src="./assets/cancel.png" alt="" />
+      </button>
+
+      <section class="drawer-section" aria-label="전시 소개 메뉴">
+        <h2 class="drawer-title">전시 소개</h2>
+        <div class="drawer-rule"></div>
+
+        <nav class="drawer-links" aria-label="전시 소개 세부 탭">
+          <a class="neue" href="./menu4.html#overview" data-goto="overview">Overview</a>
+          <a class="neue" href="./menu4.html#themes" data-goto="themes">Themes</a>
+          <a class="neue" href="./menu4.html#creators" data-goto="creators">Creators</a>
+        </nav>
+      </section>
+
+      <section class="drawer-section" aria-label="Archive 메뉴" style="margin-top: 26px;">
+        <h2 class="drawer-title">Archive</h2>
+        <div class="drawer-rule"></div>
+
+        <nav class="drawer-links" aria-label="Archive 세부 탭">
+          <a class="neue" href="./archive1.html">Keyword Art</a>
+        </nav>
+      </section>
+    </div>
+  </aside>
+
+  <!-- Intro Video -->
+  <div class="intro" id="introLayer">
+    <video
+      id="introVideo"
+      src="./assets/intro.mp4"
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+    ></video>
+  </div>
+
+  <!-- Background -->
+  <div class="bg"></div>
+
+  <!-- Home -->
   <main class="page">
     <section class="content">
-      <h1 class="title">
-        <span>Digital</span>
-        <span>Panopticon</span>
-      </h1>
-
       <div class="menu-wrapper">
-        <nav class="menu" aria-label="메뉴">
+        <nav class="menu">
           <a class="menu-btn" href="./menu4.html">
-            <span class="text">제 1면 보이지 않는 감시자</span>
+            <span class="text">전시 소개</span>
             <span class="arrow">›</span>
           </a>
-
-          <a class="menu-btn" href="./menu1.html">
-            <span class="text">제 2면 내려놓는 순간 보이는 것들</span>
-            <span class="arrow">›</span>
-          </a>
-
-          <a class="menu-btn" href="./menu2.html">
-            <span class="text">제 3면 Digital Panopticon</span>
-            <span class="arrow">›</span>
-          </a>
-
-          <a class="menu-btn" href="./menu3.html">
-            <span class="text">감시로부터 자유로워지기</span>
+          <a class="menu-btn" href="./archive1.html">
+            <span class="text">Archive</span>
             <span class="arrow">›</span>
           </a>
         </nav>
       </div>
-
       <footer>© Digital Panopticon</footer>
     </section>
   </main>
+
+  <script>
+    (function () {
+      const intro = document.getElementById("introLayer");
+      const video = document.getElementById("introVideo");
+
+      // 영상 속도
+      video.playbackRate = 1.4;
+
+      let done = false;
+      function showHomeSmooth(){
+        if(done) return;
+        done = true;
+
+        // 홈 먼저 등장
+        document.body.classList.add("show-home");
+
+        // 다음 프레임에 영상 페이드아웃
+        requestAnimationFrame(() => {
+          intro.classList.add("hidden");
+        });
+
+        try { video.pause(); } catch(e){}
+      }
+
+      // 영상 종료 시
+      video.addEventListener("ended", showHomeSmooth);
+
+      // 혹시 종료 이벤트 안 올 경우 대비
+      function armFallback(){
+        const dur = Number.isFinite(video.duration) ? video.duration : 14;
+        const effectiveMs = (dur / (video.playbackRate || 1)) * 1000;
+        setTimeout(showHomeSmooth, effectiveMs + 50);
+      }
+
+      if(video.readyState >= 1){
+        armFallback();
+      }else{
+        video.addEventListener("loadedmetadata", armFallback, { once:true });
+      }
+
+      video.play().catch(()=>{});
+
+      // ===== Drawer open/close =====
+      const hamburgerBtn = document.getElementById("hamburgerBtn");
+      const drawer = document.getElementById("drawer");
+      const drawerDim = document.getElementById("drawerDim");
+      const drawerCloseBtn = document.getElementById("drawerCloseBtn");
+
+      function openDrawer(){
+        drawer.classList.add("open");
+        drawerDim.classList.add("open");
+        drawer.setAttribute("aria-hidden","false");
+        drawerDim.setAttribute("aria-hidden","false");
+        document.body.classList.add("menu-open");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeDrawer(){
+        drawer.classList.remove("open");
+        drawerDim.classList.remove("open");
+        drawer.setAttribute("aria-hidden","true");
+        drawerDim.setAttribute("aria-hidden","true");
+        document.body.classList.remove("menu-open");
+        document.body.style.overflow = "";
+      }
+
+      hamburgerBtn.addEventListener("click", openDrawer);
+      drawerCloseBtn.addEventListener("click", closeDrawer);
+      drawerDim.addEventListener("click", closeDrawer);
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape" && drawer.classList.contains("open")) closeDrawer();
+      });
+    })();
+  </script>
 </body>
 </html>
