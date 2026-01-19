@@ -1,0 +1,41 @@
+<!-- partials/header.html -->
+<header class="fixed-header">
+  <a class="brand" href="../index.html" aria-label="홈으로">
+    <img src="../assets/logo.png" alt="Digital Panopticon" />
+  </a>
+
+  <button class="hamburger" type="button" aria-label="메뉴 열기" id="hamburgerBtn">
+    <img src="../assets/hamburger.png" alt="" />
+  </button>
+</header>
+
+<!-- Drawer Dim + Drawer -->
+<div class="drawer-dim" id="drawerDim" aria-hidden="true"></div>
+
+<aside class="drawer" id="drawer" aria-hidden="true">
+  <div class="drawer-inner">
+    <button class="drawer-close" type="button" aria-label="메뉴 닫기" id="drawerCloseBtn">
+      <img src="../assets/cancel.png" alt="" />
+    </button>
+
+    <section class="drawer-section" aria-label="전시 소개 메뉴">
+      <h2 class="drawer-title">전시 소개</h2>
+      <div class="drawer-rule"></div>
+
+      <nav class="drawer-links" aria-label="전시 소개 세부 탭">
+        <a class="neue" href="../menu4.html#overview" data-goto="overview">Overview</a>
+        <a class="neue" href="../menu4.html#themes" data-goto="themes">Themes</a>
+        <a class="neue" href="../menu4.html#creators" data-goto="creators">Creators</a>
+      </nav>
+    </section>
+
+    <section class="drawer-section" aria-label="Archive 메뉴" style="margin-top: 26px;">
+      <h2 class="drawer-title">Archive</h2>
+      <div class="drawer-rule"></div>
+
+      <nav class="drawer-links" aria-label="Archive 세부 탭">
+        <a class="neue" href="../archive1.html">Keyword Art</a>
+      </nav>
+    </section>
+  </div>
+</aside>

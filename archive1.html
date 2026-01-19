@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Digital Panopticon - Archive</title>
+
+    <!-- Pretendard -->
+    <link rel="stylesheet" as="style" crossorigin
+        href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/pretendardvariable-gov.min.css" />
+
+    <style>
+        :root {
+            --maxw: 430px;
+            --page-bg: #171717;
+
+            --header-h: 56px;
+            --header-top-gap: 20px;
+
+            /* drawer(밝은 디자인 통일) */
+            --drawer-bg: #e9e9e9;
+            --drawer-line: rgba(0, 0, 0, 0.18);
+            --drawer-dim: rgba(0, 0, 0, 0.18);
+
+            --accent: #ff5a1f;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            font-family: "Pretendard Variable", "Pretendard", Pretendard, -apple-system, BlinkMacSystemFont,
+                "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+            background: var(--page-bg);
+            color: rgba(255, 255, 255, 0.92);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* ✅ header.html 주입 요소 스타일(필수) */
+        .fixed-header {
+            position: fixed;
+            top: calc(env(safe-area-inset-top) + var(--header-top-gap));
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(100%, var(--maxw));
+            height: var(--header-h);
+            padding: 0 20px;
+            z-index: 1000;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: transparent;
+        }
+
+        .brand {
+            display: inline-flex;
+            align-items: center;
+            height: 100%;
+        }
+
+        .brand img {
+            height: 56px;
+            width: auto;
+            display: block;
+        }
+
+        .hamburger {
+            width: 44px;
+            height: 44px;
+            border: 0;
+            background: transparent;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .hamburger:active {
+            transform: scale(0.98);
+        }
+
+        .hamburger img {
+            width: 22px;
+            height: 22px;
+            opacity: 0.9;
+            display: block;
+        }
+
+        /* ✅ drawer(밝은 디자인 통일) */
+        .drawer-dim {
+            position: fixed;
+            inset: 0;
+            background: var(--drawer-dim);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 220ms ease;
+            z-index: 1400;
+        }
+
+        .drawer {
+            position: fixed;
+            inset: 0;
+            background: var(--drawer-bg);
+            transform: translateX(100%);
+            transition: transform 280ms ease;
+            z-index: 1500;
+
+            display: flex;
+            justify-content: center;
+            color: #111;
+        }
+
+        .drawer-inner {
+            width: min(100%, var(--maxw));
+            padding:
+                calc(env(safe-area-inset-top) + 18px) 20px calc(env(safe-area-inset-bottom) + 24px);
+            position: relative;
+        }
+
+        .drawer.open {
+            transform: translateX(0);
+        }
+
+        .drawer-dim.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .drawer-close {
+            position: absolute;
+            top: calc(env(safe-area-inset-top) + 14px);
+            right: 14px;
+            width: 44px;
+            height: 44px;
+            border: 0;
+            background: transparent;
+            display: grid;
+            place-items: center;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .drawer-close:active {
+            transform: scale(0.98);
+        }
+
+        .drawer-close img {
+            width: 18px;
+            height: 18px;
+            display: block;
+        }
+
+        .drawer-section {
+            margin-top: 64px;
+        }
+
+        .drawer-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin: 0 0 10px;
+            color: rgba(0, 0, 0, 0.92);
+        }
+
+        .drawer-rule {
+            height: 1px;
+            background: var(--drawer-line);
+            margin: 0 0 18px;
+            width: 68%;
+        }
+
+        .drawer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            padding-bottom: 18px;
+        }
+
+        .drawer-links a {
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 700;
+            color: rgba(0, 0, 0, 0.88);
+            width: fit-content;
+        }
+
+        .drawer-links a:active {
+            color: var(--accent);
+        }
+
+        @font-face {
+            font-family: "NeuePlakCond";
+            src: url("./assets/neue-plak-condensed-semibold.ttf") format("truetype");
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        .drawer-links a.neue {
+            font-family: "NeuePlakCond", "Pretendard Variable", "Pretendard", sans-serif;
+            font-weight: 600;
+            letter-spacing: 0.01em;
+        }
+
+
+        body.menu-open #hamburgerBtn {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* ✅ Archive Layout */
+        .page {
+            min-height: 100svh;
+            display: flex;
+            justify-content: center;
+            padding-top: calc(env(safe-area-inset-top) + var(--header-top-gap) + var(--header-h) + 24px);
+            padding-bottom: calc(env(safe-area-inset-bottom) + 24px);
+        }
+
+        .frame {
+            width: min(100%, var(--maxw));
+            padding: 0 20px;
+        }
+
+        .title {
+            margin: 0 0 10px;
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        .desc {
+            margin: 0 0 18px;
+            font-size: 12px;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.70);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px 18px;
+        }
+
+        @media (max-width: 420px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 340px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .folder {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            /* ✅ flex-start → center */
+            gap: 8px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+
+        .folder-icon img {
+            width: 66px;
+            height: auto;
+            display: block;
+            opacity: 0.95;
+        }
+
+        .folder-no {
+            width: 100%;
+            text-align: center;
+            font-size: small;
+            /* ✅ 추가 */
+        }
+
+
+        /* ✅ 요청: 클릭 시 넘버를 #FF5A1F */
+        .folder:active .folder-no {
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ✅ 공통 header 주입 -->
+    <div id="appHeader"></div>
+    <script src="./js/app-shell.js" defer></script>
+
+    <main class="page">
+        <section class="frame">
+
+
+            <div class="grid" id="folderGrid">
+                <!-- ✅ 더미(나중에 Firebase로 교체) -->
+                <a class="folder" href="./keyword-art.html?vid=17" data-vid="17">
+                    <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+                    <span class="folder-no">No.17</span>
+                </a>
+                <a class="folder" href="./keyword-art.html?vid=16" data-vid="16">
+                    <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+                    <span class="folder-no">No.16</span>
+                </a>
+                <a class="folder" href="./keyword-art.html?vid=15" data-vid="15">
+                    <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+                    <span class="folder-no">No.15</span>
+                </a>
+                <a class="folder" href="./keyword-art.html?vid=14" data-vid="14">
+                    <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+                    <span class="folder-no">No.14</span>
+                </a>
+            </div>
+        </section>
+    </main>
+</body>
+
+</html>

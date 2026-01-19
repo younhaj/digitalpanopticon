@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Digital Panopticon - Menu1</title>
+
+  <!-- Pretendard -->
+  <link
+    rel="stylesheet"
+    as="style"
+    crossorigin
+    href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/pretendardvariable-gov.min.css"
+  />
+
+  <style>
+    :root{
+      --bg:#141818;
+      --text:#ffffff;
+      --accent:#ff5a1f;
+      --maxw: 430px;
+
+      --footer-bg:#989898;
+
+      --folder:#DFFB8A;
+      --folder-text:#1b1b1b;
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body{
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Pretendard Variable","Pretendard",Pretendard,-apple-system,BlinkMacSystemFont,
+        "Segoe UI",Roboto,"Noto Sans KR",sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    a{ color: inherit; text-decoration: none; }
+
+    /* ===== Layout ===== */
+    .page{
+      min-height: 100svh;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container{
+      width: min(100%, var(--maxw));
+      min-height: 100svh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: env(safe-area-inset-bottom);
+    }
+
+    /* ===== Header ===== */
+    header{
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        20px
+        0;
+    }
+
+    .back{
+      font-size: 20px;
+      color: var(--accent);
+      line-height: 1;
+    }
+
+    .header-title{
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: -0.01em;
+      color: var(--accent);
+    }
+
+    .header-spacer{
+      height: 30px;
+      flex-shrink: 0;
+    }
+
+    /* ===== Folder Grid ===== */
+    .grid-wrap{
+      padding: 0 20px;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .grid{
+      width: 100%;
+      max-width: 330px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 28px;
+      justify-items: center;
+    }
+
+    .folder{
+      width: 78px;
+      display: block;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .folder:active{
+      transform: scale(0.97);
+    }
+
+    /* ===== Folder Icon ===== */
+    .folder-icon{
+      position: relative;
+      width: 78px;
+      height: 62px;
+      background: var(--folder);
+
+      /* ⬅️ 아래 본체 radius */
+      border-radius: 0px 3px 3px 3px; /* top-left | top-right(0) | bottom-right | bottom-left */
+
+      box-shadow: 0 6px 16px rgba(0,0,0,0.22);
+    }
+
+    /* 상단 탭 */
+    .folder-icon::before{
+      content: "";
+      position: absolute;
+      top: -10px;
+      left: 0;
+      width: 30px;
+      height: 10px;
+      background: var(--folder);
+
+      /* ⬅️ 위 탭 radius */
+      border-radius: 3px 3px 0 0; /* top-left | top-right | bottom-right | bottom-left(0) */
+    }
+
+    /* 폴더 안 텍스트 */
+    .folder-text{
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--folder-text);
+    }
+
+    /* ===== Footer ===== */
+    footer{
+      background: var(--footer-bg);
+      color: #ffffff;
+      padding: 14px 20px 18px;
+      font-size: 11px;
+      line-height: 1.5;
+    }
+
+    footer strong{
+      display: block;
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <section class="container">
+
+      <!-- Header -->
+      <header>
+        <a href="./index.html" class="back">←</a>
+        <div class="header-title">보이지 않는 감시자</div>
+      </header>
+
+      <div class="header-spacer"></div>
+
+      <!-- Folder Grid -->
+      <section class="grid-wrap">
+        <div class="grid" id="grid"></div>
+      </section>
+
+      <!-- Footer -->
+      <footer>
+        <strong>Digital Panopticon : 잠들지 않는 눈과 귀</strong>
+        AI 기반 자연어 처리 인터랙티브 미디어 아트<br />
+        Team wave to 덕 | 백민서 성은희 이다윤 전윤하<br />
+        © 2025 wave to 덕 all rights reserved
+      </footer>
+
+    </section>
+  </main>
+
+  <script>
+    const VISITORS = Array.from({ length: 18 }, (_, i) => i + 1).reverse();
+    const grid = document.getElementById("grid");
+
+    VISITORS.forEach(n => {
+      const a = document.createElement("a");
+      a.className = "folder";
+      a.href = `./menu1-${n}.html`;
+
+      const icon = document.createElement("div");
+      icon.className = "folder-icon";
+
+      const text = document.createElement("div");
+      text.className = "folder-text";
+      text.textContent = `no.${n}`;
+
+      icon.appendChild(text);
+      a.appendChild(icon);
+      grid.appendChild(a);
+    });
+  </script>
+</body>
+</html>
