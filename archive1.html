@@ -399,33 +399,65 @@
                 drawerDim.addEventListener("click", closeDrawer);
             })();
         </script>
+        
+        <!-- Firebase -->
+        <script type="module">
+          import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+          import {
+            getFirestore, collection, getDocs, query, orderBy
+          } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+          const firebaseConfig = {
+            apiKey: "AIzaSyAwmes_1m5WqY02w8GoWelFu2awunZppKY",
+            authDomain: "dsgradu-1d8da.firebaseapp.com",
+            projectId: "dsgradu-1d8da",
+            storageBucket: "dsgradu-1d8da.firebasestorage.app",
+            messagingSenderId: "298281488171",
+            appId: "1:298281488171:web:dc0cfab7a9762a5236bf6e",
+            measurementId: "G-XQ5DE7RWMQ"
+          };
+
+          const app = initializeApp(firebaseConfig);
+          const db = getFirestore(app);
+
+          const grid = document.getElementById("folderGrid");
+
+          function folderEl(no){
+            const a = document.createElement("a");
+            a.className = "folder";
+            a.href = `./keyword-art.html?vid=${encodeURIComponent(no)}`;
+            a.innerHTML = `
+              <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
+              <span class="folder-no">No.${no}</span>
+            `;
+            return a;
+          }
+
+          async function renderFolders(){
+            grid.innerHTML = "";
+
+            const q1 = query(collection(db, "visitor_index"), orderBy("__name__"));
+            const snap = await getDocs(q1);
+
+            const nos = snap.docs.map(d => d.id);
+
+            // 숫자정렬(최신)
+            nos.sort((a,b) => Number(a) - Number(b));
+            nos.reverse();
+
+            for (const no of nos){
+              grid.appendChild(folderEl(no));
+            }
+
+            if (nos.length === 0){
+              grid.innerHTML = `<div style="grid-column:1/-1;opacity:.7">아직 저장된 관람객이 없습니다.</div>`;
+            }
+          }
+
+          renderFolders().catch(err => {
+            console.error(err);
+            grid.innerHTML = `<div style="grid-column:1/-1;opacity:.7">불러오기 실패: ${String(err?.message || err)}</div>`;
+          });
+        </script>
     </body>
-
-    <main class="page">
-        <section class="frame">
-
-
-            <div class="grid" id="folderGrid">
-                <!-- ✅ 더미(나중에 Firebase로 교체) -->
-                <a class="folder" href="./keyword-art.html?vid=17" data-vid="17">
-                    <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
-                    <span class="folder-no">No.17</span>
-                </a>
-                <a class="folder" href="./keyword-art.html?vid=16" data-vid="16">
-                    <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
-                    <span class="folder-no">No.16</span>
-                </a>
-                <a class="folder" href="./keyword-art.html?vid=15" data-vid="15">
-                    <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
-                    <span class="folder-no">No.15</span>
-                </a>
-                <a class="folder" href="./keyword-art.html?vid=14" data-vid="14">
-                    <span class="folder-icon"><img src="./assets/folder.png" alt="" /></span>
-                    <span class="folder-no">No.14</span>
-                </a>
-            </div>
-        </section>
-    </main>
-</body>
-
 </html>

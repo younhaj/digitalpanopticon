@@ -149,30 +149,88 @@
     </section>
   </main>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+    import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
     const debugEl = document.getElementById("debug");
     const stageEl = document.getElementById("stage");
     const titleEl = document.getElementById("pageTitle");
 
-    function setDebug(msg){ debugEl.textContent = msg; }
+    const setDebug = (msg) => (debugEl.textContent = msg);
 
-    // ✅ URL에서 관람객 고유번호 가져오기
+    // 관람객 고유번호
     const params = new URLSearchParams(location.search);
-    const visitorId = params.get("vid") || "unknown";
-    titleEl.textContent = "No." + visitorId;
+    const visitorId = (params.get("vid") || "").trim();
+    titleEl.textContent = visitorId ? `No.${visitorId}` : "No.(missing)";
 
-    // ✅ 더미 키워드(나중에 Firebase로 교체)
-    const DUMMY_KEYWORDS = [
-      "알고리즘","추천","감시","추적","도청",
-      "개인정보","데이터","기록","로그","패턴",
-      "예측","프로파일링","필터버블","편향","클릭",
-      "스크롤","시선","광고","취향","피드"
-    ];
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "AIzaSyAwmes_1m5WqY02w8GoWelFu2awunZppKY",
+      authDomain: "dsgradu-1d8da.firebaseapp.com",
+      projectId: "dsgradu-1d8da",
+      storageBucket: "dsgradu-1d8da.firebasestorage.app",
+      messagingSenderId: "298281488171",
+      appId: "1:298281488171:web:dc0cfab7a9762a5236bf6e",
+      measurementId: "G-XQ5DE7RWMQ"
+    };
 
-    // 🔥 TODO: Firebase 붙이면 여기만 바꾸면 됨
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    // Firebase
     async function getKeywords(vid){
-      // vid로 DB 조회 -> keywords array return
-      return DUMMY_KEYWORDS;
+      if (!vid) {
+        throw new Error("vid 파라미터가 없습니다.");
+      }
+
+      const padded = String(vid).padStart(2, "0");
+
+      // visitor_index
+      const idxRef = doc(db, "visitor_index", padded);
+      const idxSnap = await getDoc(idxRef);
+      if (!idxSnap.exists()) {
+        throw new Error(`visitor_index/${padded} 문서가 없습니다.`);
+      }
+
+      const data = idxSnap.data() || {};
+      const docId = data.docId;
+      if (!docId) {
+        throw new Error(`visitor_index/${padded}에 docId 필드가 없습니다.`);
+      }
+
+      // visitor_data
+      const collected = [];
+      const seen = new Set();
+
+      for (let i = 1; i <= 10; i++){
+        const qCode = `Q${String(i).padStart(2,"0")}`;
+        const snap = await getDocs(collection(db, "visitor_data", docId, qCode));
+
+        snap.forEach(d => {
+          const row = d.data() || {};
+          const orig = (row.original_keyword || "").trim();
+          const related = Array.isArray(row.related_keywords) ? row.related_keywords : [];
+
+          if (orig && !seen.has(orig)){
+            seen.add(orig);
+            collected.push(orig);
+          }
+          for (const r of related){
+            const rr = String(r || "").trim();
+            if (rr && !seen.has(rr)){
+              seen.add(rr);
+              collected.push(rr);
+            }
+          }
+        });
+      }
+
+      if (collected.length === 0){
+        throw new Error(`visitor_data/${docId}/Qxx 에 키워드가 없습니다.`);
+      }
+
+      return collected;
     }
 
     window.addEventListener("error", (e) => {
@@ -199,8 +257,8 @@
         return;
       }
 
-      setDebug("✅ Matter OK\nstage: " + stageW + "×" + stageH + "\nloading keywords...");
-
+      // setDebug("✅ Matter OK\nstage: " + stageW + "×" + stageH + "\nloading keywords...");
+      
       const engine = Engine.create();
       engine.gravity.y = 1.05;
 
